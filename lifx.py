@@ -3,6 +3,7 @@ from typing import Dict, List
 
 class LIFX:
     '''
+        docs: https://api.developer.lifx.com
         selectors: https://api.developer.lifx.com/docs/selectors
     '''
 
@@ -69,5 +70,43 @@ class LIFX:
                 'defaults': defaults,
                 'fast': fast
             }
+        )
+        return response
+
+    def pulse_effect(self, color: str, selector: str = 'all', from_color: str = '', period: float = 2, cycles: float = 5, power_on: bool = True):
+        '''
+            Args:
+                color = the color for the effect
+                from_color = the color to start the effect from
+                period = time in seconds for one cycle
+                cycles = number of times to repeat
+                power_on = turn on the light if not already on
+            Returns:
+                response object
+        '''
+        response = requests.post(
+            url=f'{LIFX.url}/v1/lights/{selector}/effects/pulse',
+            headers=self.headers,
+            json={
+                'color': color,
+                'from_color': from_color,
+                'period': period,
+                'cycles': cycles,
+                'power_on': power_on
+            }
+        )
+        return response
+
+    def effects_off(self, selector: str = 'all', power_off: bool = False):
+        '''
+            Args:
+                power_off = also turn the lights off
+            Returns:
+                response object
+        '''
+        response = requests.post(
+            url=f'{LIFX.url}/v1/lights/{selector}/effects/off',
+            headers=self.headers,
+            json={'power_off': power_off}
         )
         return response
